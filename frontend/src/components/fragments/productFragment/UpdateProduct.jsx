@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Alert from "../../../Alert";
+import PropType from "prop-types";
 
-const AddProduct = () => {
+const UpdateProduct = ({ dataId }) => {
   const [name, setName] = useState("");
   const [catagoty, setCatagoty] = useState("");
   const [brand, setBrand] = useState("");
@@ -17,10 +18,24 @@ const AddProduct = () => {
   // const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
 
+  useEffect(() => {
+    fetchData(dataId);
+  }, [dataId]);
+
   const loadImage = (e) => {
     const image = e.target.files[0];
     setFile(image);
     setPreview(URL.createObjectURL(image));
+  };
+
+  const fetchData = async (id) => {
+    const response = await axios.get(`http://localhost:5000/product/${id}`);
+    setName(response.data.name);
+    setBrand(response.data.brand);
+    setDescription(response.data.description);
+    setPrice(response.data.price);
+    setCatagoty(response.data.catagoty);
+    setPreview(response.data.ImgProduct.img_url);
   };
 
   const handleSubmit = async (e) => {
@@ -34,7 +49,7 @@ const AddProduct = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:5000/product", formData, {
+      await axios.patch("http://localhost:5000/product", formData, {
         headers: {
           "Content-type": "multipart/form-data",
         },
@@ -231,7 +246,7 @@ const AddProduct = () => {
                   clipRule="evenodd"
                 ></path>
               </svg>
-              Add new product
+              edit new product
             </button>
           </form>
         </div>
@@ -240,4 +255,8 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+UpdateProduct.propTypes = {
+  dataId: PropType.number,
+};
+
+export default UpdateProduct;

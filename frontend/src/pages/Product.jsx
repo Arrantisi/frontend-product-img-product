@@ -6,14 +6,14 @@ import Alert from "../Alert";
 
 const Product = () => {
   const [show, setShow] = useState(false);
+  const [saveProduct, setSaveProduct] = useState(0);
   const [data, setData] = useState([]);
   const [selectedId, setSlectedId] = useState(0);
-  const [saveProduct, setSaveProduct] = useState(0);
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [show, saveProduct]);
 
   const fetchData = async () => {
     try {
@@ -37,11 +37,19 @@ const Product = () => {
 
   const handleShow = (dataId) => {
     setSlectedId(dataId);
-    setShow((show) => !show);
+    setShow(!show);
+    fetchData();
   };
 
   return (
     <section className=" bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 h-screen">
+      <div
+        className="fixed top-0 right-0 bottom-0 left-0 bg-transparent z-10"
+        onClick={() => {
+          setShow(false);
+          setSaveProduct(false);
+        }}
+      ></div>
       {error && <Alert status={"error"} text={error} />}
       <div className="relative mx-auto max-w-screen-xl px-4 lg:px-12">
         <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -51,7 +59,7 @@ const Product = () => {
                 <label htmlFor="simple-search" className="sr-only">
                   Search
                 </label>
-                <div className="relative w-full">
+                <div className="relative w-full z-20">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg
                       aria-hidden="true"
@@ -81,7 +89,7 @@ const Product = () => {
               <button
                 type="button"
                 onClick={() => setSaveProduct(!saveProduct)}
-                className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                className="z-20 flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
               >
                 <svg
                   className="h-3.5 w-3.5 mr-2"
@@ -102,7 +110,7 @@ const Product = () => {
                 <button
                   id="actionsDropdownButton"
                   data-dropdown-toggle="actionsDropdown"
-                  className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  className="z-20 w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   type="button"
                 >
                   <svg
@@ -123,7 +131,7 @@ const Product = () => {
                 <button
                   id="filterDropdownButton"
                   data-dropdown-toggle="filterDropdown"
-                  className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  className="z-20 w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   type="button"
                 >
                   <svg
@@ -182,7 +190,7 @@ const Product = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
+                {data.map((item, index) => (
                   <tr
                     className="border-b dark:border-gray-700 overflow-hidden"
                     key={item.id}
@@ -195,13 +203,15 @@ const Product = () => {
                     </th>
                     <td className="px-4 py-3">{item.catagoty}</td>
                     <td className="px-4 py-3">{item.brand}</td>
-                    <td className="px-4 py-3">{item.ImgProduct.img_name}</td>
+                    <td className="px-4 py-3 max-w-[12rem] truncate">
+                      {item.description}
+                    </td>
                     <td className="px-4 py-3">{currency.format(item.price)}</td>
                     <td className="px-4 py-3 flex items-center justify-end relative">
                       <button
                         id="apple-imac-27-dropdown-button"
                         data-dropdown-toggle="apple-imac-27-dropdown"
-                        className="inline-flex items-center p-1.5 text-sm font-medium text-center text-gray-500 rounded-lg focus:outline-none dark:text-gray-400 hover:text-gray-100 hover:bg-gray-700"
+                        className="inline-flex z-20 items-center p-1.5 text-sm font-medium text-center text-gray-500 rounded-lg focus:outline-none dark:text-gray-400 hover:text-gray-100 hover:bg-gray-700"
                         type="button"
                         onClick={() => handleShow(item.id)}
                       >
@@ -217,8 +227,9 @@ const Product = () => {
                       </button>
                       {show && selectedId === item.id && (
                         <ShowButton
+                          dataIndex={index}
+                          lengthData={data.length - 4}
                           dataId={item.id}
-                          lengthData={data.length - 1}
                         />
                       )}
                     </td>

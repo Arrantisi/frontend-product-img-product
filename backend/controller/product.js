@@ -165,6 +165,11 @@ export const deleteProduct = async (req, res) => {
                 id: response.id
             }
         });
+        await ImgProduct.destroy({
+            where: {
+                id: response.id
+            }
+        })
         res.status(200).json({ msg: 'produck telah di hapus' });
     } catch (error) {
         console.error(error)
