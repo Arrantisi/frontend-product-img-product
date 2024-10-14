@@ -3,16 +3,19 @@ import { useState } from "react";
 import DeleteProduct from "./DeleteProduct";
 import ShowProduct from "./ShowProduct";
 import UpdateProduct from "./UpdateProduct";
+import { useAtom } from "jotai";
+import { activeButton } from "../../../jotai/atom";
 
 const ShowButton = ({ dataIndex, lengthData, dataId }) => {
   const [destroy, setDestroy] = useState(false);
   const [showProduct, setShowProduct] = useState(false);
   const [editProduct, setEditProduct] = useState(false);
+  const close = useAtom(activeButton);
 
   return (
     <div
       id={dataIndex}
-      className={` absolute right-4 ${
+      className={`${close[0] ? "block" : "hidden"} absolute right-4 ${
         dataIndex > lengthData ? "bottom-12" : "top-12"
       } z-30 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600`}
     >

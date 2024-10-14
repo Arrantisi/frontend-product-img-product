@@ -1,11 +1,14 @@
 import axios from "axios";
+import { useAtom } from "jotai";
 import PropType from "prop-types";
 import { useEffect, useState } from "react";
+import { activeButton } from "../../../jotai/atom";
 
 const ShowProduct = ({ dataId }) => {
   const [data, setData] = useState([]);
   const [picture, setPicture] = useState([]);
   const [close, setClose] = useState(false);
+  const [closeShow, setCloseShow] = useAtom(activeButton);
 
   useEffect(() => {
     fetchData(dataId);
@@ -22,12 +25,17 @@ const ShowProduct = ({ dataId }) => {
     currency: "USD",
   });
 
+  const handleButton = () => {
+    setClose(true);
+    setCloseShow(false);
+  };
+
   return (
     <div
       id="readProductModal"
       aria-hidden="true"
       className={`${
-        close && "hidden"
+        close && closeShow && "hidden"
       } flex backdrop-blur-sm overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full`}
     >
       <div className="relative p-4 w-full max-w-xl h-full md:h-auto">
@@ -42,7 +50,7 @@ const ShowProduct = ({ dataId }) => {
             <div>
               <button
                 type="button"
-                onClick={() => setClose(!close)}
+                onClick={handleButton}
                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
                 data-modal-toggle="readProductModal"
               >

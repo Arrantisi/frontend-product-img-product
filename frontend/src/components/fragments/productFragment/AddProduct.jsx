@@ -2,8 +2,11 @@ import axios from "axios";
 import { useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Alert from "../../../Alert";
+import { useAtom } from "jotai";
+import { addProduct } from "../../../jotai/atom";
 
 const AddProduct = () => {
+  const [close, setClose] = useAtom(addProduct);
   const [name, setName] = useState("");
   const [catagoty, setCatagoty] = useState("");
   const [brand, setBrand] = useState("");
@@ -11,8 +14,7 @@ const AddProduct = () => {
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState("");
   const [preview, setPreview] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [close, setClose] = useState(false);
+  // const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   // const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -39,7 +41,8 @@ const AddProduct = () => {
           "Content-type": "multipart/form-data",
         },
       });
-      setSuccess(!success);
+      setClose(false);
+      // setSuccess(!success);
     } catch (error) {
       if (error.response) {
         setError(error.response.data.msg);
@@ -51,8 +54,6 @@ const AddProduct = () => {
         setError(`kesalahan ${error.message}`);
         setAlert(!alert);
       }
-    } finally {
-      // console.log(loading);
     }
   };
 
@@ -62,13 +63,13 @@ const AddProduct = () => {
       tabIndex="-1"
       aria-hidden="true"
       className={`${
-        close && "hidden"
-      } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 backdrop-blur-sm flex justify-center items-center w-full md:inset-0 h-modal md:h-full`}
+        close ? "flex" : "hidden"
+      } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 backdrop-blur-sm justify-center items-center w-full md:inset-0 h-modal md:h-full`}
     >
       {alert && <Alert status={"error"} text={error} />}
-      {success && (
+      {/* {success && (
         <Alert status={"success"} text={"product berhasil di simpan"} />
-      )}
+      )} */}
       <div className="relative p-4 w-full max-w-2xl h-full md:h-auto">
         <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
           <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
@@ -79,7 +80,7 @@ const AddProduct = () => {
               type="button"
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
               data-modal-toggle="defaultModal"
-              onClick={() => setClose(true)}
+              onClick={() => setClose(false)}
             >
               <svg
                 aria-hidden="true"

@@ -2,18 +2,20 @@ import axios from "axios";
 import PropType from "prop-types";
 import { useState } from "react";
 import Alert from "../../../Alert";
+import { useAtom } from "jotai";
+import { activeButton } from "../../../jotai/atom";
 
 const DeleteProduct = ({ dataId }) => {
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [alert, setAlert] = useState(false);
   const [close, setClose] = useState(false);
+  const [closeShow, setCloseShow] = useAtom(activeButton);
 
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/product/${dataId}`);
-      setSuccess(!success);
-      setClose(!close);
+      setClose(true);
+      setCloseShow(false);
     } catch (error) {
       if (error.response) {
         setError(error.response.data.msg);
@@ -28,22 +30,26 @@ const DeleteProduct = ({ dataId }) => {
     }
   };
 
+  const handleClose = () => {
+    setClose(true);
+    setCloseShow(false);
+  };
+
   return (
     <div
       id="deleteModal"
       tabIndex="-1"
       aria-hidden="true"
       className={`${
-        close && "hidden"
+        close && !closeShow && "hidden"
       } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 backdrop-blur-sm flex justify-center items-center w-full md:inset-0 h-modal md:h-full`}
     >
       {alert && <Alert status={"error"} text={error} />}
-      {success && <Alert status={"success"} text={"data berhasil di delete"} />}
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
         <div className="relative p-4 text-center bg-white rounded-lg border border-gray-700 shadow dark:bg-gray-800 sm:p-5">
           <button
             type="button"
-            onClick={() => setClose(true)}
+            onClick={handleClose}
             className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             data-modal-toggle="deleteModal"
           >
@@ -82,7 +88,7 @@ const DeleteProduct = ({ dataId }) => {
             <button
               data-modal-toggle="deleteModal"
               type="button"
-              onClick={() => setClose(true)}
+              onClick={handleClose}
               className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
             >
               No, cancel

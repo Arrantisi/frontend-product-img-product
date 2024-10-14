@@ -3,10 +3,12 @@ import ShowButton from "../components/fragments/productFragment/ShowButton";
 import axios from "axios";
 import AddProduct from "../components/fragments/productFragment/AddProduct";
 import Alert from "../Alert";
+import { useAtom } from "jotai";
+import { activeButton, addProduct } from "../jotai/atom";
 
 const Product = () => {
-  const [show, setShow] = useState(false);
-  const [saveProduct, setSaveProduct] = useState(0);
+  const [show, setShow] = useAtom(activeButton);
+  const [saveProduct, setSaveProduct] = useAtom(addProduct);
   const [data, setData] = useState([]);
   const [selectedId, setSlectedId] = useState(0);
   const [error, setError] = useState("");
